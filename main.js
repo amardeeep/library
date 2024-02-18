@@ -12,20 +12,14 @@ function Books(title,author,pages,read){
     this.author=author;
     this.pages=pages;
     this.read=read;
-    this.info=function(){
-        if(this.read==true){
-            return this.title+" by "+this.author+", read."
-        }
-        else{
-            return this.title+" by "+this.author+", not read yet."
-        }
-    }
+    
 }
-//create sample book objects to check working of for loop
-/*const book1= new Books("title1","author1","pages1",true);
-const book2= new Books("title2","author2","pages2",false);
-addBookToLibrary(book1);
-addBookToLibrary(book2);*/
+Books.prototype.toggleRead=function(){
+    this.read=!this.read;
+        
+}
+
+
 //function to clear all divs
 function clearDivs(){
     const Divs=document.querySelectorAll('.newDiv');
@@ -33,21 +27,7 @@ function clearDivs(){
         div.remove();
     })
 }
-/*
-function removeBtn(){
-    const divs=document.querySelectorAll('.newDiv');
-    divs.forEach(div=>{
-        const removeBtn=document.createElement('button');
-        removeBtn.innerHTML="Remove Button";
-        div.appendChild(removeBtn);
-        removeBtn.addEventListener("click",()=>{
-            const indexToBeRemoved=div.dataset.number;
-            myLibrary.splice(indexToBeRemoved,1);
-            createBooksDiv(myLibrary);
-    
-        })
-    });
-    }*/
+
 //create a loop to iterate through array and display it on a div.
 const cardsDiv=document.querySelector(".cards");
 function createBooksDiv(myLibrary){
@@ -60,25 +40,30 @@ function createBooksDiv(myLibrary){
         const divPages= document.createElement('h3');
         const divRead= document.createElement('h3');
         const divHeader=document.createElement('h1');
-        divHeader.innerHTML="Book"+i;
-        divTitle.innerHTML=myLibrary[i].title;
-        divAuthor.innerHTML=myLibrary[i].author;
-        divPages.innerHTML=myLibrary[i].pages;
-        divRead.innerHTML=myLibrary[i].read;
+        divHeader.innerHTML="Book-"+(i+1);
+        divTitle.innerHTML="Title-"+myLibrary[i].title;
+        divAuthor.innerHTML="Author-"+myLibrary[i].author;
+        divPages.innerHTML="Number of Pages-"+myLibrary[i].pages;
+        if(myLibrary[i].read){
+            divRead.innerHTML="Status-Finished!";
+        }
+        else{
+            divRead.innerHTML="Status-Reading!"
+        }
         newDiv.appendChild(divHeader);
         newDiv.appendChild(divTitle);
         newDiv.appendChild(divAuthor);
         newDiv.appendChild(divPages);
         newDiv.appendChild(divRead);
-        /*divAuthor.dataset.author=myLibrary[i].author;
-        divTitle.dataset.title=myLibrary[i].title;
-        divPages.dataset.pages=myLibrary[i].pages;
-        divRead.dataset.read=myLibrary[i].pages;*/
+       
         newDiv.setAttribute("class","newDiv");
         newDiv.setAttribute("data-number",i)
         const removeBtn=document.createElement("button");
-        newDiv.appendChild(removeBtn);
+        const divButton=document.createElement("div");
+        newDiv.appendChild(divButton);
+        divButton.appendChild(removeBtn);
         removeBtn.innerHTML="Remove Button";
+        removeBtn.setAttribute("class","divButtons");
         removeBtn.addEventListener("click",()=>{
             const indexToBeRemoved=i;
             myLibrary.splice(indexToBeRemoved,1);
@@ -87,11 +72,12 @@ function createBooksDiv(myLibrary){
         })
         const status=document.createElement('button');
         status.innerHTML="Book Status";
+        status.setAttribute("class","divButtons")
         status.addEventListener("click",()=>{
-            myLibrary[i].read=!myLibrary[i].read;
+            myLibrary[i].toggleRead();
             createBooksDiv(myLibrary);
-        })
-        newDiv.appendChild(status);
+        });
+        divButton.appendChild(status);
         
     }
 }
@@ -115,9 +101,6 @@ form.addEventListener("submit",(event)=>{
     const read=form.read.value;
     const newbook=new Books(title,author,pages,read); 
     createBooksDiv(addBookToLibrary(newbook));
+    dialog.close();
 });
-Books.prototype.readStatus=function(){
-
-    
-}
 
